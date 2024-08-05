@@ -13,7 +13,7 @@ module Polyamorous
         chain << [reflection, table]
       end
 
-      base_klass.with_connection do |connection|
+      base_klass.connection_pool.with_connection do |connection|
         # The chain starts with the target table, but we want to end with it here (makes
         # more sense in this context), so we reverse
         chain.reverse_each do |reflection, table|
@@ -41,7 +41,7 @@ module Polyamorous
 
           if others && !others.empty?
             joins.concat arel.join_sources
-            append_constraints(connection, joins.last, others)
+            append_constraints(joins.last, others)
           end
 
           # The current table in this iteration becomes the foreign table in the next
